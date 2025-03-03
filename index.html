@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum</title>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0d0d0d;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .header {
+            width: clamp(80%, 80vw, 1000px);
+            margin: 20px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .header h2 {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+        }
+        .header h3 {
+            font-size: clamp(1.2rem, 2.5vw, 2rem);
+        }
+        .header p {
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+        }
+        .header img {
+            max-width: clamp(150px, 20vw, 300px);
+            height: auto;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            width: 100%;
+        }
+        .task-box {
+            width: clamp(80%, 90vw, 900px);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            transition: all 0.5s ease;
+            text-align: left;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            animation: neonPulse 2s infinite ease-in-out;
+        }
+        @keyframes neonPulse {
+            0% { border-color: rgba(0, 255, 255, 0.3); box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
+            50% { border-color: rgba(0, 255, 255, 0.7); box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); }
+            100% { border-color: rgba(0, 255, 255, 0.3); box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
+        }
+        .task-box::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(0, 255, 255, 0.2);
+            border-radius: 50%;
+            opacity: 0;
+            z-index: -1;
+        }
+        .task-box.expanded::before {
+            animation: rippleEffect 1s ease-out;
+        }
+        @keyframes rippleEffect {
+            0% { width: 0; height: 0; opacity: 0.5; }
+            100% { width: 200%; height: 200%; opacity: 0; }
+        }
+        .task-box:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.02);
+            border-color: rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+        }
+        .task-box.expanded {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            max-height: 80vh;
+            width: clamp(80%, 90vw, 800px);
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+            z-index: 1000;
+            padding: 30px;
+            animation: expandAnimation 0.5s ease forwards;
+            border: 2px solid rgba(0, 255, 255, 0.8);
+        }
+        .task-box.expanded .view-btn {
+            display: none;
+        }
+        .task-box img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 10px auto;
+            border-radius: 5px;
+            object-fit: contain;
+        }
+        .task-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .code-box {
+            position: relative;
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 10px;
+            overflow-x: auto;
+            width: 100%;
+        }
+        pre {
+            margin: 0;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 255, 255, 0.8);
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        .copy-btn:hover {
+            background: rgba(0, 255, 255, 1);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+        }
+        .copy-btn.copied {
+            background: rgba(0, 255, 107, 0.8);
+            box-shadow: 0 0 15px rgba(0, 255, 107, 0.8);
+        }
+        .copy-btn::before {
+            content: "Copy";
+        }
+        .copy-btn.copied::before {
+            content: "Copied!";
+        }
+        .view-btn {
+            display: block;
+            margin: 0 auto;
+            background: rgba(0, 255, 255, 0.8);
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        .view-btn:hover {
+            background: rgba(0, 255, 255, 1);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+        }
+        .task-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            width: 100%;
+        }
+        .task-box.expanded .task-content {
+            display: block;
+            opacity: 1;
+        }
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            display: none;
+        }
+        .backdrop.active {
+            display: block;
+        }
+        .quiz-container {
+            width: clamp(80%, 90vw, 900px);
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(0, 212, 255, 0.2));
+            padding: 30px;
+            border-radius: 15px;
+            position: relative;
+            margin: 40px auto;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1s ease forwards;
+        }
+        .quiz-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 107, 107, 0.3) 0%, transparent 70%);
+            opacity: 0.5;
+            z-index: -1;
+            animation: rotateGlow 10s infinite linear;
+        }
+        .quiz-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.4), 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+        .quiz-title {
+            font-size: 2em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.8);
+            margin-bottom: 20px;
+        }
+        .quiz-link {
+            display: inline-block;
+            background: rgba(255, 107, 107, 0.8);
+            padding: 15px 30px;
+            border-radius: 10px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.6);
+        }
+        .quiz-link:hover {
+            background: rgba(255, 107, 107, 1);
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(255, 107, 107, 0.9);
+        }
+        .download-btn {
+            display: block;
+            margin: 15px auto 0;
+            background: rgba(255, 107, 107, 0.8);
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            color: #fff;
+            font-size: 1em;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+        .download-btn:hover {
+            background: rgba(255, 107, 107, 1);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.8);
+        }
+        @keyframes expandAnimation {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Media Queries untuk Dinamis di Desktop dan Mobile */
+        @media (max-width: 1024px) {
+            .header, .task-box, .quiz-container {
+                width: clamp(85%, 90vw, 900px);
+            }
+            .task-box.expanded {
+                width: clamp(85%, 95vw, 800px);
+                max-height: 85vh;
+            }
+            .task-title {
+                font-size: 1.4em;
+            }
+            .quiz-title {
+                font-size: 1.8em;
+            }
+        }
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+            .container {
+                padding: 10px;
+                gap: 10px;
+            }
+            .task-box {
+                padding: 15px;
+            }
+            .task-box.expanded {
+                width: clamp(90%, 95vw, 800px);
+                padding: 20px;
+                max-height: 85vh;
+            }
+            .task-title {
+                font-size: 1.3em;
+            }
+            .code-box {
+                padding: 10px;
+            }
+            .copy-btn {
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+            .view-btn {
+                padding: 8px 16px;
+                font-size: 0.9em;
+            }
+            .download-btn {
+                padding: 8px 16px;
+                font-size: 0.9em;
+            }
+            .quiz-container {
+                padding: 20px;
+                margin: 20px auto;
+            }
+            .quiz-title {
+                font-size: 1.6em;
+            }
+            .quiz-link {
+                padding: 12px 25px;
+                font-size: 1.1em;
+            }
+        }
+        @media (max-width: 480px) {
+            .header {
+                padding: 15px;
+            }
+            .container {
+                padding: 5px;
+                gap: 8px;
+            }
+            .task-box {
+                padding: 10px;
+            }
+            .task-box.expanded {
+                width: clamp(95%, 98vw, 800px);
+                max-height: 90vh;
+                padding: 15px;
+            }
+            .task-title {
+                font-size: 1.2em;
+            }
+            .code-box {
+                padding: 8px;
+            }
+            .copy-btn {
+                padding: 5px 8px;
+                font-size: 0.7em;
+            }
+            .view-btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+            .download-btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+            .quiz-container {
+                padding: 15px;
+                margin: 15px auto;
+            }
+            .quiz-title {
+                font-size: 1.5em;
+            }
+            .quiz-link {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="backdrop" id="backdrop"></div>
+    <div class="header">
+        <h2>LAPORAN PRAKTIKUM</h2>
+        <h3>Pemrograman Terstruktur</h3>
+        <p><em>Praktikum 14: struktur</em></p>
+        <img src="img/11.png" alt="Logo Kampus">
+        <p>Nama: <em>Eka Kurniawan Zein</em></p>
+        <p>NIM: <em>24026004</em></p>
+        <p><strong>PROGRAM STUDI D3 TEKNOLOGI INFORMASI<br>POLITEKNIK SEMEN INDONESIA GRESIK</strong></p>
+        <p><em>01/03/2025</em></p>
+    </div>
+    <div class="container">
+        <div class="task-box">
+            <h2 class="task-title">Coding 1: Program Struktur.<br>membuat struktur produk sesuai dengan contoh sebelumnya dan dua variabel struktur dengan
+                informasi produk. Salah satunya harus dimulai langsung dalam deklarasi dan yang lainnya
+                seharusnya diberikan informasi dari pengguna. Terakhir, program harus mencetak tabel
+                produk.</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <h3>Coding Program</h3>
+                <div class="code-box"> 
+                    <pre><code>#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+
+struct Prod {
+char cName[20];
+int iId;
+double dPrice;
+int iNo;
+char cSupp[25];
+};
+
+int main() {
+Prod prodOne = {"Minyak Zaitun", 101, 60.000, 15, "CV Herbal Indonesia"};
+Prod prodTwo;
+
+std::cout << "Masukkan informasi untuk produk:" << std::endl;
+std::cout << "Dimulai dari nama produk: ";
+std::cin.getline(prodTwo.cName, 20);
+
+std::cout << "ID produk: ";
+std::cin >> prodTwo.iId;
+
+std::cout << "Harga: ";
+std::cin >> prodTwo.dPrice;
+
+std::cout << "Berapa banyak item yang tersedia dalam stok? ";
+std::cin >> prodTwo.iNo;
+std::cin.ignore();
+
+std::cout << "Siapa yang memasok produk: ";
+std::cin.getline(prodTwo.cSupp, 25);
+
+std::cout << std::left << std::setw(15) << "Prodname" << std::setw(12) << "Product id"
+    << std::setw(8) << "Price" << std::setw(12) << "Quantity"
+    << std::setw(15) << "Supplier" << std::endl;
+
+std::cout << std::setw(15) << prodOne.cName << std::setw(12) << prodOne.iId
+    << std::setw(8) << prodOne.dPrice << std::setw(12) << prodOne.iNo
+    << std::setw(15) << prodOne.cSupp << std::endl
+    << std::endl;
+
+std::cout << std::setw(15) << prodTwo.cName << std::setw(12) << prodTwo.iId
+    << std::setw(8) << prodTwo.dPrice << std::setw(12) << prodTwo.iNo
+    << std::setw(15) << prodTwo.cSupp << std::endl
+    << std::endl;
+
+return 0;
+}
+</code></pre>
+                    <button class="copy-btn"></button>
+                </div>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Output Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/1.png" alt="Tampilan Output">
+                <a href="img/1.png" download="Output_Coding1.png" class="download-btn">Unduh Gambar 1</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Grafik JSP</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/2.png" alt="Tampilan Output">
+                <a href="img/2.png" download="JSP_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Penjelasan Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/3.png" alt="Tampilan Output">
+                <a href="img/3.png" download="Penjelasan_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="task-box">
+            <h2 class="task-title">Coding 2 :Array dengan Variabel Struktur</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <h3>Coding Program</h3>
+                <div class="code-box"> 
+                    <pre><code>#include &lt;iostream&gt;
+
+
+struct Prod {
+char cName[20];
+int iId;
+double dPrice;
+int iNo;
+char cSupp[25];
+};
+
+int main() {
+Prod sProds[3];
+
+for (int i = 0; i < 3; i++) {
+std::cout << "Masukkan nilai untuk no produk " << i + 1 << std::endl;
+std::cout << "Mulailah dengan nama produk: ";
+std::cin.ignore();
+std::cin.getline(sProds[i].cName, 20);
+
+std::cout << "ID produk: ";
+std::cin >> sProds[i].iId;
+
+std::cout << "Harga: ";
+std::cin >> sProds[i].dPrice;
+
+std::cout << "Berapa banyak stoknya? ";
+std::cin >> sProds[i].iNo;
+
+std::cin.ignore();
+std::cout << "Siapa yang memasok produk: ";
+std::cin.getline(sProds[i].cSupp, 25);
+}
+
+// Cetak informasi produk
+for (int i = 0; i < 3; i++) {
+std::cout << "Informasi Produk " << i + 1 << ":" << std::endl;
+std::cout << "Nama Produk: " << sProds[i].cName << std::endl;
+std::cout << "ID Produk: " << sProds[i].iId << std::endl;
+std::cout << "Harga: " << sProds[i].dPrice << std::endl;
+std::cout << "Stok: " << sProds[i].iNo << std::endl;
+std::cout << "Pemasok: " << sProds[i].cSupp << std::endl << std::endl;
+}
+
+return 0;
+}
+
+</code></pre>
+                    <button class="copy-btn"></button>
+                </div>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Output Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/5.png" alt="Tampilan Output">
+                <a href="img/5.png" download="Output_Coding1.png" class="download-btn">Unduh Gambar 1</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Grafik JSP</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/6.png" alt="Tampilan Output">
+                <a href="img/6.png" download="JSP_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Penjelasan Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/4.png" alt="Tampilan Output">
+                <a href="img/4.png" download="Penjelasan_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="task-box">
+            <h2 class="task-title">Coding 3:Pointer ke Struktur</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <h3>Coding Program</h3>
+                <div class="code-box"> 
+                    <pre><code>#include &lt;iostream&gt;
+struct Prod {
+char cName[20];
+int iId;
+double dPrice;
+int iNo;
+char cSupp[25];
+};
+
+int main() {
+Prod sProds[3] = {
+{"Minyak Makanan", 101, 25000, 100, "PT. Herbal Indonesia"},
+{"Baby Oil", 102, 20000, 25, "CV Baby Production"},
+{"Minyak Boiler", 103, 65000, 30, "PT. Shell Indonesia"}
+};
+
+Prod *pProd = sProds; // Langsung gunakan nama array sebagai pointer
+
+for (int i = 0; i < 3; i++, pProd++) {
+std::cout << "Product Name: " << pProd->cName << "\n"
+    << "Product ID: " << pProd->iId << "\n"
+    << "Price: " << pProd->dPrice << "\n"
+    << "Stock: " << pProd->iNo << "\n"
+    << "Supplier: " << pProd->cSupp << "\n\n";
+}
+
+return 0;
+}
+</code></pre>
+                    <button class="copy-btn"></button>
+                </div>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Output Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/7.png" alt="Tampilan Output">
+                <a href="img/7.png" download="Output_Coding1.png" class="download-btn">Unduh Gambar 1</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Grafik JSP</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/8.png" alt="Tampilan Output">
+                <a href="img/8.png" download="JSP_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Penjelasan Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/9.png" alt="Tampilan Output">
+                <a href="img/9.png" download="Penjelasan_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="task-box">
+            <h2 class="task-title">Coding 4: Struktur di Memori Dinamis</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <h3>Coding Program</h3>
+                <div class="code-box"> 
+                    <pre><code>#include &lt;iostream&gt;
+
+struct Prod {
+char ProductName[50];
+double Price;
+int Stock;
+};
+
+int main() {
+int iQty;
+std::cout << "Berapa produk yang harus dimasukkan? ";
+std::cin >> iQty;
+std::cin.ignore(); // Membersihkan buffer setelah input jumlah produk
+
+Prod *pProd = new Prod[iQty];
+
+for (int i = 0; i < iQty; i++) {
+std::cout << "Masukkan nama produk ke-" << i + 1 << ": ";
+std::cin.getline(pProd[i].ProductName, 50);
+
+std::cout << "Masukkan harga produk ke-" << i + 1 << ": ";
+std::cin >> pProd[i].Price;
+
+std::cout << "Masukkan stok produk ke-" << i + 1 << ": ";
+std::cin >> pProd[i].Stock;
+std::cin.ignore(); // Membersihkan buffer setelah input angka agar getline tidak terlewati
+}
+
+std::cout << "\nData Produk:\n";
+for (int i = 0; i < iQty; i++) {
+std::cout << "Produk ke-" << i + 1 << ":\n";
+std::cout << "Nama: " << pProd[i].ProductName << std::endl;
+std::cout << "Harga: " << pProd[i].Price << std::endl;
+std::cout << "Stok: " << pProd[i].Stock << std::endl << std::endl;
+}
+
+delete[] pProd;
+return 0;
+}
+
+
+</code></pre>
+                    <button class="copy-btn"></button>
+                </div>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Output Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/13.png" alt="Tampilan Output">
+                <a href="img/13.png" download="Output_Coding1.png" class="download-btn">Unduh Gambar 1</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Grafik JSP</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/12.png" alt="Tampilan Output">
+                <a href="img/12.png" download="JSP_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Penjelasan Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/13.png" alt="Tampilan Output">
+                <a href="img/13.png" download="Penjelasan_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="task-box">
+            <h2 class="task-title">Coding 5 Struktur Sebagai Fungsi Parameter :a.Parameter Referensi </h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <h3>Coding Program</h3>
+                <div class="code-box"> 
+                    <pre><code>#include &lt;iostream&gt;
+struct Prod {
+char cName[20];
+int iId;
+double dPrice;
+int iNo;
+char cSupp[25];
+};
+
+void printOnScreen(Prod &rProd) {
+std::cout << rProd.cName << '\t'
+<< rProd.iId << "\t"
+<< rProd.dPrice << '\t'
+<< rProd.iNo << '\t'
+<< rProd.cSupp << std::endl
+<< std::endl;
+}
+
+int main() {
+Prod prodOne = {"Minyak Makanan", 101, 25000, 100, "PT. Herbal Indonesia"};
+printOnScreen(prodOne);
+
+return 0;
+}
+
+</code></pre>
+                    <button class="copy-btn"></button>
+                </div>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Output Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/17.png" alt="Tampilan Output">
+                <a href="img/17.png" download="Output_Coding1.png" class="download-btn">Unduh Gambar 1</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Grafik JSP</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/15.png" alt="Tampilan Output">
+                <a href="img/15.png" download="JSP_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Penjelasan Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/16.png" alt="Tampilan Output">
+                <a href="img/16.png" download="Penjelasan_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="task-box">
+            <h2 class="task-title">Coding 5 :b Array Parameter</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <h3>Coding Program</h3>
+                <div class="code-box"> 
+                    <pre><code>#include &lt;iostream&gt;
+struct Prod {
+char cName[20];
+int iId;
+double dPrice;
+int iNo;
+char cSupp[25];
+};
+
+void printOnScreen(const Prod p[], const int n) {
+for (int i = 0; i < n; i++) {
+std::cout << p[i].cName << '\t'
+<< p[i].iId << '\t'
+<< p[i].dPrice << '\t'
+<< p[i].iNo << '\t'
+<< p[i].cSupp << std::endl
+<< std::endl;
+}
+}
+
+int main() {
+Prod sProds[3] = {
+{"Minyak Makanan", 101, 25000, 100, "PT. Herbal Indonesia"},
+{"Baby Oil", 102, 20000, 25, "CV Baby Production"},
+{"Minyak Boiler", 103, 65000, 30, "PT. Shell Indonesia"}
+};
+
+printOnScreen(sProds, 3);
+
+return 0;
+}
+
+</code></pre>
+                    <button class="copy-btn"></button>
+                </div>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Output Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/19.png" alt="Tampilan Output">
+                <a href="img/19.png" download="Output_Coding1.png" class="download-btn">Unduh Gambar 1</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Grafik JSP</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/21.png" alt="Tampilan Output">
+                <a href="img/21.png" download="JSP_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Penjelasan Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/20.png" alt="Tampilan Output">
+                <a href="img/20.png" download="Penjelasan_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="task-box">
+            <h2 class="task-title">Coding 5 :c Parameter Pointer</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <h3>Coding Program</h3>
+                <div class="code-box"> 
+                    <pre><code>#include &lt;iostream&gt;
+struct Prod {
+char cName[20];
+int iId;
+double dPrice;
+int iNo;
+char cSupp[25];
+};
+
+void printOnScreen(Prod *p, const int n) {
+for (int j = 0; j < n; j++) {
+std::cout << p->cName << '\t'
+        << p->iId << '\t'
+        << p->dPrice << '\t'
+        << p->iNo << '\t'
+        << p->cSupp << std::endl
+        << std::endl;
+p++;  // Menggunakan pointer arithmetic untuk berpindah ke elemen berikutnya
+}
+}
+
+int main() {
+Prod sProds[3] = {
+{"Minyak Makanan", 101, 25000, 100, "PT. Herbal Indonesia"},
+{"Baby Oil", 102, 20000, 25, "CV Baby Production"},
+{"Minyak Boiler", 103, 65000, 30, "PT. Shell Indonesia"}
+};
+
+Prod *pProd = &sProds[0];  // Pointer menunjuk ke array sProds
+printOnScreen(pProd, 3);   // Memanggil fungsi untuk mencetak data
+
+return 0;
+}
+
+</code></pre>
+                    <button class="copy-btn"></button>
+                </div>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Output Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/23.png" alt="Tampilan Output">
+                <a href="img/23.png" download="Output_Coding1.png" class="download-btn">Unduh Gambar 1</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Grafik JSP</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/22.png" alt="Tampilan Output">
+                <a href="img/22.png" download="JSP_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <div class="task-box">
+            <h2 class="task-title">Penjelasan Program</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <img src="img/24.png" alt="Tampilan Output">
+                <a href="img/24.png" download="Penjelasan_Coding1.png" class="download-btn">Unduh Gambar</a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+           
+        <div class="task-box">
+            <h2 class="task-title">Analisa Mengapa Perlu Belajar Struktur</h2>
+            <button class="view-btn">Lihat</button>
+            <div class="task-content">
+                <div class="code-box">
+                    <h3 style="text-align: center; color: #00ffff; text-shadow: 0 0 5px rgba(0, 255, 255, 0.8); margin-bottom: 20px;">📂 Mengapa Belajar Struktur Penting dalam Pemrograman? 📂</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 20px;">
+                            <strong style="color: #ff6b6b; font-size: 1.2em;">🚀 Organisasi Data yang Lebih Baik</strong>
+                            <p style="color: #e0e0e0; line-height: 1.6;">Struktur data memungkinkan Anda untuk mengelompokkan data yang terkait menjadi satu kesatuan, sehingga memudahkan dalam pengelolaan dan manipulasi data. Contohnya, struktur seperti <code>struct</code> di C atau <code>class</code> di OOP.</p>
+                        </li>
+                        <li style="margin-bottom: 20px;">
+                            <strong style="color: #00d4ff; font-size: 1.2em;">📝 Efisiensi dalam Pengelolaan Data</strong>
+                            <p style="color: #e0e0e0; line-height: 1.6;">Dengan menggunakan struktur, Anda dapat mengakses dan memodifikasi data secara lebih efisien, terutama ketika berhadapan dengan data yang kompleks atau dalam jumlah besar.</p>
+                        </li>
+                        <li style="margin-bottom: 20px;">
+                            <strong style="color: #ffeb3b; font-size: 1.2em;">🔍 Pemodelan Data yang Lebih Realistis</strong>
+                            <p style="color: #e0e0e0; line-height: 1.6;">Struktur data memungkinkan Anda untuk memodelkan data sesuai dengan dunia nyata, seperti membuat objek yang merepresentasikan entitas seperti mahasiswa, mobil, atau akun bank.</p>
+                        </li>
+                        <li style="margin-bottom: 20px;">
+                            <strong style="color: #4caf50; font-size: 1.2em;">⚡ Dasar untuk Struktur Data yang Lebih Kompleks</strong>
+                            <p style="color: #e0e0e0; line-height: 1.6;">Pemahaman tentang struktur dasar seperti array, struct, atau class adalah fondasi untuk mempelajari struktur data yang lebih kompleks seperti linked list, stack, queue, tree, dan graph.</p>
+                        </li>
+                        <li style="margin-bottom: 20px;">
+                            <strong style="color: #ab47bc; font-size: 1.2em;">🌍 Keterampilan Dasar dalam Banyak Bahasa Pemrograman</strong>
+                            <p style="color: #e0e0e0; line-height: 1.6;">Belajar struktur adalah keterampilan dasar yang penting di banyak bahasa pemrograman, seperti C, C++, Java, Python, dan lainnya. Konsep ini juga berlaku dalam pengembangan aplikasi berbasis objek (OOP).</p>
+                        </li>
+                    </ul>
+                
+                    <button class="copy-btn"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="quiz-container">
+        <h2 class="quiz-title">Eksplorasi Soal-Soal</h2>
+        <a href="https://ekz121.github.io/comming-soon/" class="quiz-link">Ke Halaman Soal</a>
+    </div>
+
+    <script>
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 100 },
+                "color": { "value": "#ffffff" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5, "random": true },
+                "size": { "value": 3, "random": true },
+                "move": { "speed": 2, "direction": "none", "out_mode": "out" }
+            },
+            "interactivity": {
+                "events": { "onhover": { "enable": true, "mode": "repulse" } }
+            }
+        });
+
+        const taskBoxes = document.querySelectorAll('.task-box');
+        const backdrop = document.getElementById('backdrop');
+
+        const toggleExpand = (element) => {
+            taskBoxes.forEach(box => {
+                if (box !== element && box.classList.contains('expanded')) {
+                    box.classList.remove('expanded');
+                }
+            });
+            element.classList.toggle('expanded');
+            if (element.classList.contains('expanded')) {
+                backdrop.classList.add('active');
+            } else {
+                backdrop.classList.remove('active');
+            }
+        };
+
+        taskBoxes.forEach(box => {
+            const viewBtn = box.querySelector('.view-btn');
+            viewBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleExpand(box);
+            });
+            box.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('copy-btn')) {
+                    toggleExpand(box);
+                }
+            });
+        });
+
+        backdrop.addEventListener('click', () => {
+            taskBoxes.forEach(box => box.classList.remove('expanded'));
+            backdrop.classList.remove('active');
+        });
+
+        const copyButtons = document.querySelectorAll('.copy-btn');
+        copyButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const codeBox = button.closest('.code-box');
+                const code = codeBox.querySelector('pre, ul')?.textContent || '';
+                navigator.clipboard.writeText(code).then(() => {
+                    button.classList.add('copied');
+                    setTimeout(() => button.classList.remove('copied'), 2000);
+                }).catch(err => console.error('Gagal menyalin: ', err));
+            });
+        });
+    </script>
+</body>
+</html>
